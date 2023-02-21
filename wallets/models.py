@@ -24,6 +24,7 @@ class Wallet(models.Model):
             raise Exception("private key not correct")
 
     def get_private_key(self, password: str):
+        """retreives private key from simple password. should decode it"""
         f = Fernet(self.encode_passowrd(password))
         private_key = f.decrypt(self.encrypted_private_key)
         return private_key
