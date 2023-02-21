@@ -1,3 +1,7 @@
-from django.shortcuts import render
+from rest_framework.views import APIView
 
-# Create your views here.
+
+class TransactionsCount(APIView):
+    def get(self, request):
+        """see transactions count"""
+        pass

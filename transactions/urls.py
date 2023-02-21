@@ -1,5 +1,6 @@
 from django.urls import path
+from .views import TransactionsCount
 
 urlpatterns = [
-    path("count"),
+    path("count", TransactionsCount.as_view()),
 ]
