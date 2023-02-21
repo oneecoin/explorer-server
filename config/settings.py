@@ -46,6 +46,7 @@ CUSTOM_APPS = [
     "transactions.apps.TransactionsConfig",
     "wallets.apps.WalletsConfig",
     "core.apps.CoreConfig",
+    "inbox.apps.InboxConfig",
 ]
 
 THIRD_PARTY_APPS = [
