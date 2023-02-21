@@ -16,4 +16,9 @@ class Wallet(models.Model):
         return hash == self.private_key_hash
 
     def create_simple_password(self, password, private_key):
-        
+        hash = sha256(private_key).digest()
+        if hash == self.private_key_hash:
+            f = Fernet(password)
+            self.encrypted_private_key = f.encrypt(bytes(private_key))
+        else:
+            raise Exception("private key not correct")
