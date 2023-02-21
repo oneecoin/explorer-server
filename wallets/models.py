@@ -12,13 +12,15 @@ class Wallet(models.Model):
     def check_simple_password(self, password):
         f = Fernet(password)
         private_key = f.decrypt(self.encrypted_private_key)
-        hash = sha256(private_key).digest()
-        return hash == self.private_key_hash
+        return self.validate_private_key(private_key)
 
     def create_simple_password(self, password, private_key):
-        hash = sha256(private_key).digest()
-        if hash == self.private_key_hash:
+        if self.validate_private_key(private_key):
             f = Fernet(password)
             self.encrypted_private_key = f.encrypt(bytes(private_key))
         else:
             raise Exception("private key not correct")
+
+    def validate_private_key(self, private_key):
+        hash = sha256(private_key).digest()
+        return hash == self.private_key_hash
