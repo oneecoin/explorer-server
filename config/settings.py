@@ -40,7 +40,11 @@ SYSTEM_APPS = [
 ]
 
 
-CUSTOM_APPS = []
+CUSTOM_APPS = [
+    "users.apps.UsersConfig",
+    "transactions.apps.TransactionsConfig",
+    "wallets.apps.WalletsConfig",
+]
 
 THIRD_PARTY_APPS = []
 
@@ -134,3 +138,5 @@ REST_FRAMEWORK = {
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     )
 }
+
+AUTH_USER_MODEL = "users.User"
