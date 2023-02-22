@@ -13,3 +13,17 @@ class ListUserSerializer(serializers.ModelSerializer):
             "username",
             "wallet",
         )
+
+
+class PublicUserSerializer(serializers.ModelSerializer):
+    wallet = WalletSerializer()
+
+    class Meta:
+        model = User
+        fields = (
+            "pk",
+            "username",
+            "wallet",
+            "avatar",
+        )
+

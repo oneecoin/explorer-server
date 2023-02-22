@@ -10,5 +10,6 @@ class User(AbstractUser):
         "wallets.Wallet", on_delete=models.CASCADE, related_name="user"
     )
     email = models.EmailField(unique=True)
+    avatar = models.URLField()
 
     REQUIRED_FIELDS = ["email", "wallet"]

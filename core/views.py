@@ -40,6 +40,7 @@ class GithubAuth(APIView):
                 user = User.objects.create(
                     username=user_data.get("login"),
                     email=user_emails[0]["email"],
+                    avatar=user_data.get("avatar_url"),
                 )
                 user.set_unusable_password()
                 user.save()
