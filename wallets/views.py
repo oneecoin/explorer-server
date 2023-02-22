@@ -6,7 +6,11 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from inbox.models import Message
-from .serializers import ExposeWalletSerializer
+from .serializers import (
+    ExposeWalletSerializer,
+    SimplePasswordSerializer,
+    GetPrivateKeySerializer,
+)
 
 
 class MyWallet(APIView):
@@ -16,32 +20,38 @@ class MyWallet(APIView):
         """ok if private key sent is valid"""
         wallet = request.user.wallet
         private_key = request.data.get("private_key")
-        if wallet.validate_private_key(private_key.decode()):
+        if type(private_key) is not str:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+        if wallet.validate_private_key(private_key.encode()):
             return Response(status=status.HTTP_200_OK)
         else:
             return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
 
     def put(self, request):
         """replace whole wallet"""
-        wallet = ExposeWalletSerializer(data=request.data).data
-        res = requests.post(
-            f"{settings.MEMPOOL_URL}/wallets/verify",
-            data={
-                "privateKey": wallet["private_key"],
-                "publicKey": wallet["public_key"],
-            },
-        )
-        if res.status_code != status.HTTP_200_OK:
+        wallet = ExposeWalletSerializer(data=request.data)
+        if wallet.is_valid():
+            wallet = wallet.data
+            res = requests.post(
+                f"{settings.MEMPOOL_URL}/wallets/verify",
+                data={
+                    "privateKey": wallet["private_key"],
+                    "publicKey": wallet["public_key"],
+                },
+            )
+            if res.status_code != status.HTTP_200_OK:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+
+            request.user.wallet.update(
+                public_key=wallet["public_key"],
+                private_key_hash=sha256(wallet["private_key"].encode()).digest(),
+                encrypted_private_key=None,
+            )
+            Message.make_simple_pwd_message_again(request.user)
+
+            return Response(status=status.HTTP_200_OK)
+        else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
-
-        request.user.wallet.update(
-            public_key=wallet["public_key"],
-            private_key_hash=sha256(wallet["private_key"].encode()).digest(),
-            encrypted_private_key=None,
-        )
-        Message.make_simple_pwd_message_again(request.user)
-
-        return Response(status=status.HTTP_200_OK)
 
 
 class SimplePassword(APIView):
@@ -49,8 +59,30 @@ class SimplePassword(APIView):
 
     def post(self, request):
         """create smiple password"""
-        pass
+        serializer = SimplePasswordSerializer(data=request.data)
+        if serializer.is_valid():
+            data = serializer.data
+            wallet = request.user.wallet
+            try:
+                wallet.create_simple_password(
+                    data["simple_password"], data["private_key"]
+                )
+                return Response(status=status.HTTP_201_CREATED)
+            except Exception:
+                return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request):
         """get private key from simple password"""
-        pass
+        serializer = GetPrivateKeySerializer(request.data)
+        if serializer.is_valid():
+            wallet = request.user.wallet
+            private_key = wallet.get_private_key(serializer.data["simple_password"])
+            if wallet.validate_private_key(private_key):
+                return Response(
+                    status=status.HTTP_200_OK,
+                    data={"private_key": private_key.decode()},
+                )
+            return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)

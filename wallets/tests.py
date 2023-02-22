@@ -20,7 +20,6 @@ class WalletTest(TestCase):
         self.wallet.create_simple_password(self.simple_password, self.private_key)
 
         # check simple password
-        self.assertTrue(self.wallet.check_simple_password(self.simple_password))
         self.assertEqual(
             self.wallet.get_private_key(self.simple_password).decode(), self.private_key
         )
