@@ -1,5 +1,9 @@
+from rest_framework import status
 from rest_framework.views import APIView
+from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from .serializers import MessageSerializer
+from .models import Message
 
 
 class AllMessages(APIView):
@@ -7,11 +11,15 @@ class AllMessages(APIView):
 
     def get(self, request):
         """get all messages"""
-        pass
+        messages = request.user.messages
+        serializer = MessageSerializer(messages, many=True)
+        return Response(status=status.HTTP_200_OK, data=serializer.data)
 
     def delete(self, request):
         """delete all messages"""
-        pass
+        messages = request.user.messages
+        messages.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class AMessage(APIView):
@@ -19,4 +27,9 @@ class AMessage(APIView):
 
     def delete(self, request, pk):
         """delete a message"""
-        pass
+        try:
+            message = Message.objects.get(pk=pk)
+            message.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except Message.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
