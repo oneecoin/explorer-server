@@ -1,3 +1,12 @@
 from django.db import models
 
-# Create your models here.
+
+class Message(models.Model):
+    class MessageType(models.TextChoices):
+        TRANSACTION = "transaction", "Transaction"
+        SYSTEM = "system", "System"
+
+    receiver = models.ForeignKey("users.User", on_delete=models.CASCADE)
+    sender = models.ForeignKey("users.User", on_delete=models.CASCADE, null=True)
+    content = models.CharField(max_length=50)
+    message_type = models.CharField(max_length=20, choices=MessageType.choices)
