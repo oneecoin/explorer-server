@@ -7,7 +7,6 @@ from rest_framework_simplejwt.utils import datetime_to_epoch
 from rest_framework.permissions import IsAuthenticated
 import requests
 from users.models import User
-from .serializers import JWTSerializer
 
 
 class GithubAuth(APIView):
