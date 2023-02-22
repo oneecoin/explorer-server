@@ -31,9 +31,24 @@ class PublicUserSerializer(serializers.ModelSerializer):
         return user.wallet.public_key
 
 
+class CommonUserSerializer(serializers.ModelSerializer):
+    message_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = (
+            "pk",
+            "username",
+            "message_count",
+            "avatar",
+        )
+
+    def get_message_count(self, user):
+        return user.messages.count()
+
+
 class PrivateUserSerializer(serializers.ModelSerializer):
     wallet = WalletSerializer()
-    message_count = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -43,8 +58,4 @@ class PrivateUserSerializer(serializers.ModelSerializer):
             "username",
             "wallet",
             "avatar",
-            "message_count",
         )
-
-    def get_message_count(self, user):
-        return user.messages.count()
