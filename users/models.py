@@ -9,5 +9,6 @@ class User(AbstractUser):
     wallet = models.OneToOneField(
         "wallets.Wallet", on_delete=models.CASCADE, related_name="user"
     )
+    email = models.EmailField(unique=True)
 
     REQUIRED_FIELDS = ["email", "wallet"]

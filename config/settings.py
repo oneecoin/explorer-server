@@ -174,6 +174,7 @@ AUTH_USER_MODEL = "users.User"
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "TOKEN_USER_CLASS": "users.User",
 }
 
 if DEBUG:
@@ -186,4 +187,5 @@ else:
     CSRF_TRUSTED_ORIGINS = [""]
 
 CORS_ALLOW_CREDENTIALS = True
+GH_CLIENT_ID = env("GH_CLIENT_ID")
 GH_SECRET = env("GH_SECRET")
