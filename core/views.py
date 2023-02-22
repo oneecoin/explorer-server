@@ -1,4 +1,6 @@
+from hashlib import sha256
 from django.conf import settings
+from django.db import transaction
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -6,6 +8,7 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.utils import datetime_to_epoch
 from rest_framework.permissions import IsAuthenticated
 import requests
+from wallets.models import Wallet
 from users.models import User
 
 
@@ -33,17 +36,33 @@ class GithubAuth(APIView):
             user_emails = requests.get(
                 "https://api.github.com/user/emails", headers=headers
             ).json()
+            res = Response()
             try:
                 user = User.objects.get(email=user_emails[0]["email"])
-
+                res.status_code = status.HTTP_200_OK
+                res.data = {}
             except User.DoesNotExist:
-                user = User.objects.create(
-                    username=user_data.get("login"),
-                    email=user_emails[0]["email"],
-                    avatar=user_data.get("avatar_url"),
-                )
-                user.set_unusable_password()
-                user.save()
+                with transaction.atomic():
+                    user = User.objects.create(
+                        username=user_data.get("login"),
+                        email=user_emails[0]["email"],
+                        avatar=user_data.get("avatar_url"),
+                    )
+                    user.set_unusable_password()
+                    data = requests.post(f"{settings.MEMPOOL_URL}/wallets").json()
+                    public_key = data.get("publicKey")
+                    private_key = data.get("privateKey")
+                    wallet = Wallet.objects.create(
+                        public_key=public_key,
+                        private_key_hash=sha256(private_key.encode()).digest(),
+                    )
+                    user.wallet = wallet
+                    user.save()
+                    res.status_code = status.HTTP_201_CREATED
+                    res.data = {
+                        "publicKey": public_key,
+                        "privateKey": private_key,
+                    }
         except Exception:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -52,10 +71,7 @@ class GithubAuth(APIView):
         access_token = str(token.access_token)
         expires = datetime_to_epoch(token.current_time + token.lifetime)
 
-        res = Response(
-            status=status.HTTP_200_OK,
-            data={"access": access_token, "exp": expires},
-        )
+        res.data = dict(res.data, **{"access": access_token, "exp": expires})
         res.set_cookie("refresh", refresh_token, httponly=True)
         return res
 

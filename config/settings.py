@@ -189,3 +189,4 @@ else:
 CORS_ALLOW_CREDENTIALS = True
 GH_CLIENT_ID = env("GH_CLIENT_ID")
 GH_SECRET = env("GH_SECRET")
+MEMPOOL_URL = "http://localhost:8080"
