@@ -39,7 +39,28 @@ class Me(APIView):
 
     def put(self, request):
         """change my info"""
-        pass
+        serializer = serializers.UpdateUserSerializer(
+            request.user,
+            data=request.data,
+            partial=True,
+        )
+        if serializer.is_valid():
+            try:
+                user = serializer.save()
+                return Response(
+                    status=status.HTTP_200_OK,
+                    data=serializers.PrivateUserSerializer(user).data,
+                )
+            except Exception:
+                return Response(
+                    status=status.HTTP_406_NOT_ACCEPTABLE,
+                )
+
+        else:
+            return Response(
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
 
 class PublicUser(APIView):

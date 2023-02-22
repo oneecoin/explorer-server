@@ -47,6 +47,15 @@ class CommonUserSerializer(serializers.ModelSerializer):
         return user.messages.count()
 
 
+class UpdateUserSerializer(serializers.Serializer):
+    class Meta:
+        model = User
+        fields = (
+            "username",
+            "avatar",
+        )
+
+
 class PrivateUserSerializer(serializers.ModelSerializer):
     wallet = WalletSerializer()
 
