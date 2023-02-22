@@ -29,11 +29,11 @@ class Wallet(models.Model):
         private_key = f.decrypt(self.encrypted_private_key)
         return private_key
 
-    # utils function
-
     def validate_private_key(self, private_key: bytes):
         hash = sha256(private_key).digest()
         return hash == self.private_key_hash
+
+    # util function
 
     def encode_passowrd(self, password: str):
         encoded_bytes = base64.urlsafe_b64encode(password.rjust(32, "0").encode())

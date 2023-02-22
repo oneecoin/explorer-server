@@ -9,3 +9,8 @@ class WalletSerializer(serializers.ModelSerializer):
             "public_key",
             "private_key_hash",
         )
+
+
+class ExposeWalletSerializer(serializers.Serializer):
+    public_key = serializers.CharField(max_length=128)
+    private_key = serializers.CharField(max_length=300)

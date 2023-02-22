@@ -9,7 +9,9 @@ from rest_framework_simplejwt.utils import datetime_to_epoch
 from rest_framework.permissions import IsAuthenticated
 import requests
 from wallets.models import Wallet
+from wallets.serializers import ExposeWalletSerializer
 from users.models import User
+from users.serializers import PrivateUserSerializer
 from inbox.models import Message
 
 
@@ -66,10 +68,15 @@ class GithubAuth(APIView):
                     Message.make_simple_pwd_message(user)
 
                 res.status_code = status.HTTP_201_CREATED
+                wallet_serializer = ExposeWalletSerializer(
+                    data={"public_key": public_key, "private_key": private_key}
+                )
+                user_serializer = PrivateUserSerializer(user)
                 res.data = {
-                    "publicKey": public_key,
-                    "privateKey": private_key,
+                    "wallet": wallet_serializer.data,
+                    "user": user_serializer.data,
                 }
+
         except Exception:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -78,7 +85,7 @@ class GithubAuth(APIView):
         access_token = str(token.access_token)
         expires = datetime_to_epoch(token.current_time + token.lifetime)
 
-        res.data = dict(res.data, **{"access": access_token, "exp": expires})
+        res.data = dict(res.data, **{"auth": {"access": access_token, "exp": expires}})
         res.set_cookie("refresh", refresh_token, httponly=True)
         return res
 

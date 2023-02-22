@@ -23,3 +23,13 @@ class Message(models.Model):
             message_type=Message.MessageType.SYSTEM,
         )
         message.save()
+
+    @classmethod
+    def make_simple_pwd_message_again(self, user):
+        message = Message.objects.create(
+            to=user,
+            title="지갑 정보가 바뀌었습니다!",
+            content="간편 비밀번호가 초기화 되었습니다",
+            message_type=Message.MessageType.SYSTEM,
+        )
+        message.save()
