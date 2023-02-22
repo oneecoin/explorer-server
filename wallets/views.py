@@ -1,7 +1,10 @@
 from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 
 
 class MyWallet(APIView):
+    permission_classes = [IsAuthenticated]
+
     def post(self, request):
         """ok if private key sent is valid"""
 
@@ -11,6 +14,8 @@ class MyWallet(APIView):
 
 
 class SimplePassword(APIView):
+    permission_classes = [IsAuthenticated]
+
     def post(self, request):
         """create smiple password"""
         pass
