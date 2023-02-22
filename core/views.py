@@ -10,6 +10,7 @@ from rest_framework.permissions import IsAuthenticated
 import requests
 from wallets.models import Wallet
 from users.models import User
+from inbox.models import Message
 
 
 class GithubAuth(APIView):
@@ -36,7 +37,9 @@ class GithubAuth(APIView):
             user_emails = requests.get(
                 "https://api.github.com/user/emails", headers=headers
             ).json()
+
             res = Response()
+
             try:
                 user = User.objects.get(email=user_emails[0]["email"])
                 res.status_code = status.HTTP_200_OK
@@ -52,17 +55,21 @@ class GithubAuth(APIView):
                     data = requests.post(f"{settings.MEMPOOL_URL}/wallets").json()
                     public_key = data.get("publicKey")
                     private_key = data.get("privateKey")
+
                     wallet = Wallet.objects.create(
                         public_key=public_key,
                         private_key_hash=sha256(private_key.encode()).digest(),
                     )
                     user.wallet = wallet
+
                     user.save()
-                    res.status_code = status.HTTP_201_CREATED
-                    res.data = {
-                        "publicKey": public_key,
-                        "privateKey": private_key,
-                    }
+                    Message.make_simple_pwd_message(user)
+
+                res.status_code = status.HTTP_201_CREATED
+                res.data = {
+                    "publicKey": public_key,
+                    "privateKey": private_key,
+                }
         except Exception:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
