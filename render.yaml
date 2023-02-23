@@ -1,11 +1,15 @@
 databases:
     - name: oneecoin-explorer-database
       databaseName: oneecoin
+      region: singapore
+      plan: free
       user: oneecoin
 
 services:
     - type: web
       name: oneecoin-explorer-server
+      region: singapore
+      plan: free
       env: python
       buildCommand: "./build.sh"
       startCommand: "gunicorn config.wsgi:application"
