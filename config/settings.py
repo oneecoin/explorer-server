@@ -67,6 +67,7 @@ THIRD_PARTY_APPS = [
     "rest_framework",
     "rest_framework_simplejwt",
     "django_crontab",
+    "corsheaders",
 ]
 
 INSTALLED_APPS = SYSTEM_APPS + CUSTOM_APPS + THIRD_PARTY_APPS
@@ -75,6 +76,7 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -186,14 +188,10 @@ SIMPLE_JWT = {
     "TOKEN_USER_CLASS": "users.User",
 }
 
-if DEBUG:
-    CORS_ALLOWED_ORIGINS = ["http://127.0.0.1:3000"]
-    CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1:3000"]
 
-else:
-    CORS_ALLOWED_ORIGINS = [""]
+CORS_ALLOWED_ORIGINS = ["https://oneecoin.site"]
 
-    CSRF_TRUSTED_ORIGINS = [""]
+CSRF_TRUSTED_ORIGINS = ["https://oneecoin.site"]
 
 CORS_ALLOW_CREDENTIALS = True
 GH_CLIENT_ID = env("GH_CLIENT_ID")
@@ -204,3 +202,5 @@ CRONJOBS = [
     ("* 0 * * *", "core.cron.create_transaction_model"),
     ("* 0 * * *", "core.cron.delete_outdated_transaction"),
 ]
+
+CSRF_COOKIE_DOMAIN = ".oneecoin.site"
