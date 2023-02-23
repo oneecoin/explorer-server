@@ -377,6 +377,20 @@ files = [
 Django = ">=3.2"
 
 [[package]]
+name = "django-crontab"
+version = "0.7.1"
+description = "dead simple crontab powered job scheduling for django"
+category = "main"
+optional = false
+python-versions = "*"
+files = [
+    {file = "django-crontab-0.7.1.tar.gz", hash = "sha256:1201810a212460aaaa48eb6a766738740daf42c1a4f6aafecfb1525036929236"},
+]
+
+[package.dependencies]
+Django = ">=1.8"
+
+[[package]]
 name = "django-environ"
 version = "0.9.0"
 description = "A package that allows you to utilize 12factor inspired environment variables to configure your Django application."
@@ -683,4 +697,4 @@ socks = ["PySocks (>=1.5.6,!=1.5.7,<2.0)"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "46933363136fffb6d9a11fd449ddf12e3be1f15b2775b8a7d649d193e151b2d7"
+content-hash = "c624c994a5bf4c8792d2bbba2062af4ceb635dd6818573f4f9be2d793149ac95"

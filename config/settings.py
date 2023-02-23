@@ -65,6 +65,7 @@ CUSTOM_APPS = [
 THIRD_PARTY_APPS = [
     "rest_framework",
     "rest_framework_simplejwt",
+    "django_crontab",
 ]
 
 INSTALLED_APPS = SYSTEM_APPS + CUSTOM_APPS + THIRD_PARTY_APPS
@@ -190,3 +191,8 @@ CORS_ALLOW_CREDENTIALS = True
 GH_CLIENT_ID = env("GH_CLIENT_ID")
 GH_SECRET = env("GH_SECRET")
 MEMPOOL_URL = "http://localhost:8080"
+
+CRONJOBS = [
+    ("* 0 * * *", "core.cron.create_transaction_model"),
+    ("* 0 * * *", "core.cron.delete_outdated_transaction"),
+]
