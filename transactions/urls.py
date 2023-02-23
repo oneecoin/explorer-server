@@ -1,6 +1,7 @@
 from django.urls import path
-from .views import TransactionsCount
+from .views import TransactionsCount, Transactions
 
 urlpatterns = [
-    path("count", TransactionsCount.as_view()),
+    path("", Transactions.as_view()),
+    path("/count", TransactionsCount.as_view()),
 ]

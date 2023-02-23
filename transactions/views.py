@@ -1,10 +1,40 @@
 import datetime
 from django.db.models import Q
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .serializers import TransactionSerializer
+from .serializers import TransactionSerializer, CreateTransactionSerializer
 from .models import Transaction
+from inbox.models import Message
+from users.models import User
+
+
+class Transactions(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        serializer = CreateTransactionSerializer(data=request.data)
+        if serializer.is_valid():
+            # count++
+            transaction = Transaction.objects.get(date=datetime.datetime.now().date())
+            transaction.count += 1
+            transaction.save()
+
+            # inbox
+            try:
+                data = serializer.data
+                user = User.objects.get(wallet__public_key=data.get("receiver"))
+                Message.create_transaction_message(
+                    user,
+                    request.user.wallet.public_key,
+                    data.get("amount"),
+                )
+            except User.DoesNotExist:
+                pass
+            return Response(status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class TransactionsCount(APIView):

@@ -33,3 +33,13 @@ class Message(models.Model):
             message_type=Message.MessageType.SYSTEM,
         )
         message.save()
+
+    @classmethod
+    def create_transaction_message(self, user, sender: str, amount: int):
+        message = Message.objects.create(
+            to=user,
+            title=f"당신의 지갑에 추가된 금액: {amount:,}",
+            content=f"{sender}에서 {amount:,}OCN을 송금하였습니다",
+            message_type=Message.MessageType.SYSTEM,
+        )
+        message.save()
