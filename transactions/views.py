@@ -45,12 +45,12 @@ class TransactionsCount(APIView):
         if scope == "week":
             # get last 7 days
             transactions = Transaction.objects.filter(
-                Q(date__lte=now) & Q(date_gte=now - datetime.timedelta(days=7))
+                Q(date__lte=now) & Q(date__gte=now - datetime.timedelta(days=7))
             )
         elif scope == "month":
             # get last 30 days
             transactions = Transaction.objects.filter(
-                Q(date__lte=now) & Q(date_gte=now - datetime.timedelta(days=30))
+                Q(date__lte=now) & Q(date__gte=now - datetime.timedelta(days=30))
             )
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)

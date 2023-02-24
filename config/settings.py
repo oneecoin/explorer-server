@@ -35,6 +35,7 @@ DEBUG = "RENDER" not in os.environ
 
 ALLOWED_HOSTS = [
     "localhost",
+    "wallet.oneecoin.site",
 ]
 
 RENDER_EXTERNAL_HOSTNAME = os.environ.get("RENDER_EXTERNAL_HOSTNAME")
@@ -189,9 +190,15 @@ SIMPLE_JWT = {
 }
 
 
-CORS_ALLOWED_ORIGINS = ["https://oneecoin.site"]
+CORS_ALLOWED_ORIGINS = [
+    "https://oneecoin.site",
+    "http://localhost:3000",
+]
 
-CSRF_TRUSTED_ORIGINS = ["https://oneecoin.site"]
+CSRF_TRUSTED_ORIGINS = [
+    "https://oneecoin.site",
+    "http://localhost:3000",
+]
 
 CORS_ALLOW_CREDENTIALS = True
 GH_CLIENT_ID = env("GH_CLIENT_ID")
