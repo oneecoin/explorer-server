@@ -52,21 +52,20 @@ class GithubAuth(APIView):
                 res.data = {}
             except User.DoesNotExist:
                 with transaction.atomic():
-                    user = User.objects.create(
-                        username=user_data.get("login"),
-                        email=user_emails[0]["email"],
-                        avatar=user_data.get("avatar_url"),
-                    )
-                    user.set_unusable_password()
                     data = requests.post(f"{settings.MEMPOOL_URL}/wallets").json()
                     public_key = data.get("publicKey")
                     private_key = data.get("privateKey")
-
                     wallet = Wallet.objects.create(
                         public_key=public_key,
                         private_key_hash=sha256(private_key.encode()).digest(),
                     )
-                    user.wallet = wallet
+                    user = User.objects.create(
+                        username=user_data.get("login"),
+                        email=user_emails[0]["email"],
+                        avatar=user_data.get("avatar_url"),
+                        wallet=wallet,
+                    )
+                    user.set_unusable_password()
 
                     user.save()
                     Message.make_simple_pwd_message(user)
