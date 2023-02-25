@@ -82,8 +82,7 @@ class GithubAuth(APIView):
                 }
 
         except Exception as e:
-            print(e)
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response(status=status.HTTP_400_BAD_REQUEST, data=str(e))
 
         token = TokenObtainPairSerializer.get_token(user)
         refresh_token = str(token)
