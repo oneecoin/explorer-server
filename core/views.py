@@ -74,14 +74,14 @@ class GithubAuth(APIView):
                 wallet_serializer = ExposeWalletSerializer(
                     data={"publicKey": public_key, "privateKey": private_key}
                 )
-                user_serializer = PrivateUserSerializer(user)
-                res.data = {
-                    "wallet": wallet_serializer.data,
-                    "user": user_serializer.data,
-                }
-
-        except Exception as e:
-            return Response(status=status.HTTP_400_BAD_REQUEST, data=str(e))
+                if wallet_serializer.is_valid():
+                    user_serializer = PrivateUserSerializer(user)
+                    res.data = {
+                        "wallet": wallet_serializer.data,
+                        "user": user_serializer.data,
+                    }
+        except Exception:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
         token = TokenObtainPairSerializer.get_token(user)
         refresh_token = str(token)
