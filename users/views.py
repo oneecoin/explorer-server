@@ -2,12 +2,14 @@ from django.db.models import Q
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from .models import User
 from . import serializers
 
 
 class SearchUsers(APIView):
+    permission_classes = [AllowAny]
+
     def get(self, request):
         """see list of users"""
         query = request.GET.get("q")
@@ -64,6 +66,8 @@ class Me(APIView):
 
 
 class PublicUser(APIView):
+    permission_classes = [AllowAny]
+
     def get(self, request, pk):
         """get information about user"""
         try:

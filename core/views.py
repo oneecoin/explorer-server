@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.utils import datetime_to_epoch
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 import requests
 from wallets.models import Wallet
 from wallets.serializers import ExposeWalletSerializer
@@ -17,6 +17,8 @@ from .cron import create_transaction_model, delete_outdated_transaction
 
 
 class GithubAuth(APIView):
+    permission_classes = [AllowAny]
+
     def post(self, request):
         """github login / signup"""
         try:
