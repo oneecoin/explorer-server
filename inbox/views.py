@@ -1,3 +1,4 @@
+from django.db import transaction
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -18,7 +19,9 @@ class AllMessages(APIView):
     def delete(self, request):
         """delete all messages"""
         messages = request.user.messages
-        messages.delete()
+        with transaction.atomic():
+            for message in messages:
+                message.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
