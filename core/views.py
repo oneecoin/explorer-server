@@ -13,6 +13,7 @@ from wallets.serializers import ExposeWalletSerializer
 from users.models import User
 from users.serializers import PrivateUserSerializer
 from inbox.models import Message
+from .cron import create_transaction_model, delete_outdated_transaction
 
 
 class GithubAuth(APIView):
@@ -97,3 +98,11 @@ class Logout(APIView):
         res = Response(status=status.HTTP_200_OK)
         res.delete_cookie("refresh")
         return res
+
+
+def do_cronjob(request):
+    if request.GET.get("secretKey") != settings.SECRET_KEY:
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
+    create_transaction_model()
+    delete_outdated_transaction()
+    return Response(status=status.HTTP_200_OK)

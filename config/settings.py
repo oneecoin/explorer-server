@@ -205,9 +205,5 @@ GH_CLIENT_ID = env("GH_CLIENT_ID")
 GH_SECRET = env("GH_SECRET")
 MEMPOOL_URL = "https://oneecoin-mempool-manager.onrender.com"
 
-CRONJOBS = [
-    ("* 0 * * *", "core.cron.create_transaction_model"),
-    ("* 0 * * *", "core.cron.delete_outdated_transaction"),
-]
 
 CSRF_COOKIE_DOMAIN = ".oneecoin.site"

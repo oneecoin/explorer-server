@@ -15,10 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from core.views import do_cronjob
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("auth/", include("core.urls")),
     path("users/", include("users.urls")),
     path("transactions/", include("transactions.urls")),
+    path("cron", do_cronjob),
 ]

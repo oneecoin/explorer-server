@@ -12,6 +12,6 @@ def create_transaction_model():
 def delete_outdated_transaction():
     now = datetime.datetime.now().date()
     transaction = Transaction.objects.filter(
-        date_lt=now - datetime.timedelta(days=30),
+        date__lt=now - datetime.timedelta(days=30),
     )
     transaction.delete()
