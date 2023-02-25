@@ -69,17 +69,6 @@ class GithubAuth(APIView):
 
                     user.save()
                     Message.make_simple_pwd_message(user)
-
-                res.status_code = status.HTTP_201_CREATED
-                wallet_serializer = ExposeWalletSerializer(
-                    data={"publicKey": public_key, "privateKey": private_key}
-                )
-                if wallet_serializer.is_valid():
-                    user_serializer = PrivateUserSerializer(user)
-                    res.data = {
-                        "wallet": wallet_serializer.data,
-                        "user": user_serializer.data,
-                    }
         except Exception:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
