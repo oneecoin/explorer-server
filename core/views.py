@@ -2,6 +2,7 @@ from hashlib import sha256
 from django.conf import settings
 from django.db import transaction
 from rest_framework import status
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
@@ -102,6 +103,8 @@ class Logout(APIView):
         return res
 
 
+@api_view(["GET"])
+@permission_classes([AllowAny])
 def do_cronjob(request):
     if request.GET.get("secretKey") != settings.SECRET_KEY:
         return Response(status=status.HTTP_401_UNAUTHORIZED)
