@@ -84,7 +84,7 @@ class GithubAuth(APIView):
         token = TokenObtainPairSerializer.get_token(user)
         refresh_token = str(token)
         access_token = str(token.access_token)
-        expires = datetime_to_epoch(token.current_time + token.lifetime)
+        expires = datetime_to_epoch(token.current_time + token.access_token.lifetime)
 
         res.data = dict(res.data, **{"auth": {"access": access_token, "exp": expires}})
         res.set_cookie("refresh", refresh_token, httponly=True)
