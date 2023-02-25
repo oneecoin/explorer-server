@@ -12,16 +12,14 @@ class AllMessages(APIView):
 
     def get(self, request):
         """get all messages"""
-        messages = request.user.messages
+        messages = request.user.messages.all()
         serializer = MessageSerializer(messages, many=True)
         return Response(status=status.HTTP_200_OK, data=serializer.data)
 
     def delete(self, request):
         """delete all messages"""
-        messages = request.user.messages
-        with transaction.atomic():
-            for message in messages:
-                message.delete()
+        messages = request.user.messages.all()
+        messages.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
