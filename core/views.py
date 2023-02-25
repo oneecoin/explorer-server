@@ -10,9 +10,7 @@ from rest_framework_simplejwt.utils import datetime_to_epoch
 from rest_framework.permissions import IsAuthenticated, AllowAny
 import requests
 from wallets.models import Wallet
-from wallets.serializers import ExposeWalletSerializer
 from users.models import User
-from users.serializers import PrivateUserSerializer
 from inbox.models import Message
 from .cron import create_transaction_model, delete_outdated_transaction
 
@@ -68,6 +66,7 @@ class GithubAuth(APIView):
                     user.set_unusable_password()
 
                     user.save()
+                    Message.make_wallet_message(user)
                     Message.make_simple_pwd_message(user)
         except Exception:
             return Response(status=status.HTTP_400_BAD_REQUEST)

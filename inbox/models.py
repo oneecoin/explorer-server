@@ -43,3 +43,13 @@ class Message(models.Model):
             message_type=Message.MessageType.SYSTEM,
         )
         message.save()
+
+    @classmethod
+    def make_wallet_message(self, user):
+        message = Message.objects.create(
+            to=user,
+            title="지갑을 만들어 주세요!",
+            content="새로운 계정에는 지갑이 만들어져있지 않습니다",
+            message_type=Message.MessageType.SYSTEM,
+        )
+        message.save()
