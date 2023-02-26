@@ -14,6 +14,9 @@ class ListUserSerializer(serializers.ModelSerializer):
             "public_key",
         )
 
+    def get_public_key(self, user):
+        return user.wallet.public_key
+
 
 class PublicUserSerializer(serializers.ModelSerializer):
     public_key = serializers.SerializerMethodField()

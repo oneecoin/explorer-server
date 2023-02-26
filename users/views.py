@@ -16,8 +16,6 @@ class SearchUsers(APIView):
         users = User.objects.filter(
             Q(username__icontains=query) | Q(wallet__public_key__icontains=query)
         )
-        if len(users) == 0:
-            return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = serializers.ListUserSerializer(users, many=True)
         return Response(status=status.HTTP_200_OK, data=serializer.data)
 
