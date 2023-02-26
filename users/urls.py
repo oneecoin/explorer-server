@@ -8,8 +8,8 @@ urlpatterns = [
     path("me", user_views.Me.as_view()),
     path("me/tiny", user_views.TinyMe.as_view()),
     path("me/inbox", inbox_views.AllMessages.as_view()),
-    path("me/inbox/@<int:id>", inbox_views.AMessage.as_view()),
+    path("me/inbox/@<int:pk>", inbox_views.AMessage.as_view()),
     path("me/wallet", wallet_views.MyWallet.as_view()),
     path("me/wallet/simple-password", wallet_views.SimplePassword.as_view()),
-    path("@<int:id>", user_views.PublicUser.as_view()),
+    path("@<int:pk>", user_views.PublicUser.as_view()),
 ]
