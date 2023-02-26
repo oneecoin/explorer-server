@@ -58,6 +58,11 @@ class UpdateUserSerializer(serializers.Serializer):
             "avatar",
         )
 
+    def update(self, instance, validated_data):
+        instance.username = validated_data.get("username", instance.username)
+        instance.avatar = validated_data.get("avatar", instance.avatar)
+        return instance
+
 
 class PrivateUserSerializer(serializers.ModelSerializer):
     wallet = WalletSerializer()
