@@ -51,10 +51,8 @@ class Me(APIView):
                     status=status.HTTP_200_OK,
                     data=serializers.PrivateUserSerializer(user).data,
                 )
-            except Exception:
-                return Response(
-                    status=status.HTTP_406_NOT_ACCEPTABLE,
-                )
+            except Exception as e:
+                return Response(status=status.HTTP_406_NOT_ACCEPTABLE, data=str(e))
 
         else:
             return Response(
