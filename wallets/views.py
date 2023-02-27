@@ -66,13 +66,13 @@ class SimplePassword(APIView):
         if serializer.is_valid():
             data = serializer.data
             wallet = request.user.wallet
-            try:
-                wallet.create_simple_password(
-                    data.get("simple_password"), data.get("private_key")
-                )
-                return Response(status=status.HTTP_201_CREATED)
-            except Exception as e:
-                return Response(status=status.HTTP_406_NOT_ACCEPTABLE, data={str(e)})
+            # try:
+            wallet.create_simple_password(
+                data.get("simple_password"), data.get("private_key")
+            )
+            return Response(status=status.HTTP_201_CREATED)
+            # except Exception as e:
+            #     return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request):
