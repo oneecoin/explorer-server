@@ -35,16 +35,16 @@ class MyWallet(APIView):
             res = requests.post(
                 f"{settings.MEMPOOL_URL}/wallets/verify",
                 data={
-                    "privateKey": wallet["private_key"],
-                    "publicKey": wallet["public_key"],
+                    "privateKey": wallet.get("private_key"),
+                    "publicKey": wallet.get("public_key"),
                 },
             )
             if res.status_code != status.HTTP_200_OK:
                 return Response(status=status.HTTP_400_BAD_REQUEST)
 
             request.user.wallet.update(
-                public_key=wallet["public_key"],
-                private_key_hash=sha256(wallet["private_key"].encode()).digest(),
+                public_key=wallet.get("private_key"),
+                private_key_hash=sha256(wallet.get("public_key").encode()).digest(),
                 encrypted_private_key=None,
             )
             Message.make_simple_pwd_message_again(request.user)
@@ -65,7 +65,7 @@ class SimplePassword(APIView):
             wallet = request.user.wallet
             try:
                 wallet.create_simple_password(
-                    data["simple_password"], data["private_key"]
+                    data.get("simple_password"), data.get("private_key")
                 )
                 return Response(status=status.HTTP_201_CREATED)
             except Exception:
