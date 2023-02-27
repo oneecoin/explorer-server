@@ -19,7 +19,7 @@ class Wallet(models.Model):
             self.save()
         else:
             raise Exception(
-                f"current: {str(self.private_key_hash)}, got:{sha256(private_key.encode()).digest()}"
+                f"current: {self.private_key_hash.hex()}, got:{sha256(private_key.encode()).digest().hex()}"
             )
 
     def get_private_key(self, password: str):
@@ -30,7 +30,7 @@ class Wallet(models.Model):
 
     def validate_private_key(self, private_key: bytes):
         hash = sha256(private_key).digest()
-        return str(hash) == str(self.private_key_hash)
+        return hash.hex() == self.private_key_hash.hex()
 
     # util function
 
