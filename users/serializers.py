@@ -50,19 +50,10 @@ class CommonUserSerializer(serializers.ModelSerializer):
         return user.messages.count()
 
 
-class UpdateUserSerializer(serializers.Serializer):
+class UpdateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = (
-            "username",
-            "avatar",
-        )
-
-    def update(self, instance, validated_data):
-        instance.username = validated_data.get("username", instance.username)
-        instance.avatar = validated_data.get("avatar", instance.avatar)
-        instance.save()
-        return instance
+        fields = ("username",)
 
 
 class PrivateUserSerializer(serializers.ModelSerializer):
