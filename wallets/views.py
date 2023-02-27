@@ -71,8 +71,8 @@ class SimplePassword(APIView):
                     data.get("simple_password"), data.get("private_key")
                 )
                 return Response(status=status.HTTP_201_CREATED)
-            except Exception:
-                return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
+            except Exception as e:
+                return Response(status=status.HTTP_406_NOT_ACCEPTABLE, data={str(e)})
         return Response(status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request):
