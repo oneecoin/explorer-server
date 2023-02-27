@@ -61,6 +61,7 @@ class UpdateUserSerializer(serializers.Serializer):
     def update(self, instance, validated_data):
         instance.username = validated_data.get("username", instance.username)
         instance.avatar = validated_data.get("avatar", instance.avatar)
+        instance.save()
         return instance
 
 
