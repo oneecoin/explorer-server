@@ -34,16 +34,13 @@ class MyWallet(APIView):
             wallet = wallet.data
             res = requests.post(
                 f"{settings.MEMPOOL_URL}/wallets/verify",
-                data={
+                json={
                     "privateKey": wallet.get("private_key"),
                     "publicKey": wallet.get("public_key"),
                 },
             )
             if res.status_code != status.HTTP_200_OK:
-                return Response(
-                    status=status.HTTP_400_BAD_REQUEST,
-                    data={"sent": res.request.body, "got": res.status_code},
-                )
+                return Response(status=status.HTTP_400_BAD_REQUEST)
 
             request.user.wallet.update(
                 public_key=wallet.get("private_key"),
@@ -54,10 +51,7 @@ class MyWallet(APIView):
 
             return Response(status=status.HTTP_200_OK)
         else:
-            return Response(
-                status=status.HTTP_400_BAD_REQUEST,
-                data={"error": "serializer not valid"},
-            )
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 class SimplePassword(APIView):
