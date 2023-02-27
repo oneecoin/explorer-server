@@ -42,11 +42,13 @@ class MyWallet(APIView):
             if res.status_code != status.HTTP_200_OK:
                 return Response(status=status.HTTP_400_BAD_REQUEST)
 
-            wallet = request.user.wallet
-            wallet.public_key = wallet.get("private_key")
-            wallet.private_key_hash = sha256(wallet.get("public_key").encode()).digest()
-            wallet.encrypted_private_key = None
-            wallet.save()
+            instance = request.user.wallet
+            instance.public_key = wallet.get("private_key")
+            instance.private_key_hash = sha256(
+                wallet.get("public_key").encode()
+            ).digest()
+            instance.encrypted_private_key = None
+            instance.save()
 
             Message.make_simple_pwd_message_again(request.user)
 
