@@ -18,7 +18,9 @@ class Wallet(models.Model):
             self.encrypted_private_key = f.encrypt(private_key.encode())
             self.save()
         else:
-            raise Exception("private key not correct")
+            raise Exception(
+                f"current: {self.private_key_hash}, got:{sha256(private_key).digest()}"
+            )
 
     def get_private_key(self, password: str):
         """retreives private key from simple password. should decode it"""
