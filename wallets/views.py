@@ -43,9 +43,9 @@ class MyWallet(APIView):
                 return Response(status=status.HTTP_400_BAD_REQUEST)
 
             instance = request.user.wallet
-            instance.public_key = wallet.get("private_key")
+            instance.public_key = wallet.get("public_key")
             instance.private_key_hash = sha256(
-                wallet.get("public_key").encode()
+                wallet.get("private_key").encode()
             ).digest()
             instance.encrypted_private_key = None
             instance.save()
