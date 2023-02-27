@@ -19,7 +19,7 @@ class Wallet(models.Model):
             self.save()
         else:
             raise Exception(
-                f"current: {self.private_key_hash}, got:{sha256(private_key).digest()}"
+                f"current: {self.private_key_hash}, got:{sha256(private_key.encode()).digest()}"
             )
 
     def get_private_key(self, password: str):
