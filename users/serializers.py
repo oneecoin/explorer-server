@@ -43,11 +43,15 @@ class CommonUserSerializer(serializers.ModelSerializer):
             "pk",
             "username",
             "message_count",
+            "public_key",
             "avatar",
         )
 
     def get_message_count(self, user):
         return user.messages.count()
+
+    def get_public_key(self, user):
+        return user.wallet.public_key
 
 
 class UpdateUserSerializer(serializers.ModelSerializer):
