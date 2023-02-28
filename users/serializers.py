@@ -36,6 +36,7 @@ class PublicUserSerializer(serializers.ModelSerializer):
 
 class CommonUserSerializer(serializers.ModelSerializer):
     message_count = serializers.SerializerMethodField()
+    public_key = serializers.SerializerMethodField()
 
     class Meta:
         model = User
