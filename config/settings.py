@@ -207,7 +207,7 @@ CSRF_TRUSTED_ORIGINS = [
 CORS_ALLOW_CREDENTIALS = True
 GH_CLIENT_ID = env("GH_CLIENT_ID")
 GH_SECRET = env("GH_SECRET")
-MEMPOOL_URL = "https://oneecoin-mempool-manager.onrender.com"
+MEMPOOL_URL = "https://mempool.oneecoin.site"
 
 
 CSRF_COOKIE_DOMAIN = ".oneecoin.site"
