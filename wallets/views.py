@@ -77,7 +77,7 @@ class SimplePassword(APIView):
 
     def put(self, request):
         """get private key from simple password"""
-        serializer = GetPrivateKeySerializer(request.data)
+        serializer = GetPrivateKeySerializer(data=request.data)
         if serializer.is_valid():
             wallet = request.user.wallet
             private_key = wallet.get_private_key(serializer.data["simple_password"])
