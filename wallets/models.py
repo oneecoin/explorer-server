@@ -25,7 +25,7 @@ class Wallet(models.Model):
     def get_private_key(self, password: str):
         """retreives private key from simple password. should decode it"""
         f = Fernet(self.encode_passowrd(password))
-        private_key = f.decrypt(self.encrypted_private_key)
+        private_key = f.decrypt(self.encrypted_private_key.decode().encode())
         return private_key
 
     def validate_private_key(self, private_key: bytes):
