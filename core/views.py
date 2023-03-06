@@ -97,15 +97,19 @@ class Refresh(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
-        token = request.COOKIES.get("refresh")
         try:
-            token = RefreshToken(token=token, verify=True)
-            data = TokenRefreshSerializer(token).data
+            serializer = TokenRefreshSerializer(
+                data={"refresh": request.COOKIES.get("refresh_token", None)}
+            )
+            if serializer.is_valid():
+                access = serializer.validated_data["access"]
+            else:
+                raise Exception()
             return Response(
                 status=status.HTTP_200_OK,
-                data=data,
+                data={"access": access},
             )
-        except TokenError:
+        except Exception:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 
