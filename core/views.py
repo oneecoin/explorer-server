@@ -100,8 +100,14 @@ class Refresh(APIView):
         token = request.COOKIES.get("refresh")
         try:
             token = RefreshToken(token=token)
+            expires = datetime_to_epoch(
+                token.current_time + token.access_token.lifetime
+            )
             data = TokenRefreshSerializer(token)
-            return Response(status=status.HTTP_200_OK, data=data)
+            return Response(
+                status=status.HTTP_200_OK,
+                data={"access": data["access"], "exp": expires},
+            )
         except TokenError:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
