@@ -21,6 +21,6 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("auth/", include("core.urls")),
     path("users/", include("users.urls")),
-    path("transactions/", include("transactions.urls")),
+    path("transactions", include("transactions.urls")),
     path("cron", do_cronjob),
 ]
