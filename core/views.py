@@ -5,7 +5,12 @@ from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.serializers import (
+    TokenObtainPairSerializer,
+    TokenRefreshSerializer,
+)
+from rest_framework_simplejwt.exceptions import TokenError
+from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.utils import datetime_to_epoch
 from rest_framework.permissions import IsAuthenticated, AllowAny
 import requests
@@ -88,6 +93,17 @@ class Logout(APIView):
         res = Response(status=status.HTTP_200_OK)
         res.delete_cookie("refresh")
         return res
+
+
+class Refresh(APIView):
+    def post(self, request):
+        token = request.COOKIES.get("refresh")
+        try:
+            token = RefreshToken(token=token)
+            data = TokenRefreshSerializer(token)
+            return Response(status=status.HTTP_200_OK, data=data)
+        except TokenError:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(["GET"])
