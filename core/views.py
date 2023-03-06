@@ -11,7 +11,6 @@ from rest_framework_simplejwt.serializers import (
 )
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework_simplejwt.utils import datetime_to_epoch
 from rest_framework.permissions import IsAuthenticated, AllowAny
 import requests
 from wallets.models import Wallet
@@ -79,9 +78,8 @@ class GithubAuth(APIView):
         token = TokenObtainPairSerializer.get_token(user)
         refresh_token = str(token)
         access_token = str(token.access_token)
-        expires = datetime_to_epoch(token.current_time + token.access_token.lifetime)
 
-        res.data = dict(res.data, **{"auth": {"access": access_token, "exp": expires}})
+        res.data = dict(res.data, **{"auth": {"access": access_token}})
         res.set_cookie("refresh", refresh_token, httponly=True)
         return res
 
@@ -100,16 +98,13 @@ class Refresh(APIView):
         token = request.COOKIES.get("refresh")
         try:
             token = RefreshToken(token=token)
-            expires = datetime_to_epoch(
-                token.current_time + token.access_token.lifetime
-            )
             data = TokenRefreshSerializer(token)
             return Response(
                 status=status.HTTP_200_OK,
-                data={"access": data["access"], "exp": expires},
+                data=data,
             )
         except TokenError:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 
 @api_view(["GET"])
