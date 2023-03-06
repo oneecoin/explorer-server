@@ -98,7 +98,7 @@ class Refresh(APIView):
         token = request.COOKIES.get("refresh")
         try:
             token = RefreshToken(token=token)
-            data = TokenRefreshSerializer(token)
+            data = TokenRefreshSerializer(token).data
             return Response(
                 status=status.HTTP_200_OK,
                 data=data,
