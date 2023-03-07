@@ -99,7 +99,7 @@ class Refresh(APIView):
     def get(self, request):
         try:
             serializer = TokenRefreshSerializer(
-                data={"refresh": request.COOKIES.get("refresh_token", None)}
+                data={"refresh": request.COOKIES.get("refresh", None)}
             )
             if serializer.is_valid():
                 access = serializer.validated_data["access"]
